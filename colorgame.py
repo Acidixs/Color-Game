@@ -1,6 +1,7 @@
 import tkinter as tk
 import random
 import time
+import threading
 
 class App:
     def __init__(self, master, score=0, timer=30):
@@ -38,8 +39,8 @@ class App:
         
   
         if self.timer == 30:
-            self.countdown()
-
+            threading.Thread(target=self.countdown).start()
+            
             
 
     def next_color(self):
@@ -68,7 +69,8 @@ class App:
         while self.timer > 0:
             self.timer -= 1
             self.timeLabel.config(text=f"Time left: {self.timer}")
-            time.sleep(1)
+            self.timeLabel.update()
+            self.timeLabel.after(1000, self.countdown)
             
         
     

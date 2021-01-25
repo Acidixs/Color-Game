@@ -4,17 +4,21 @@ import time
 import threading
 
 class App:
-    def __init__(self, master, score=0, timer=30):
+    def __init__(self, master, score=0, highscore=0, timer=30):
         self.master = master
         master.title = "color game"
         master.bind("<Return>", self.start)
         master.geometry("400x400")
         self.score = score
+        self.highscore = highscore
         self.timer = timer
         self.create_widgets(root)
         
     def create_widgets(self, master):
         self.colors = ["blue", "green", "yellow", "orange", "blue", "pink", "violet", "black", "white", "brown"]
+
+        self.highscoreLabel = tk.Label(master, text=f"Highscore :{self.highscore}", font=("verdana, 10"))
+        self.highscoreLabel.pack()
 
         self.scoreLabel = tk.Label(master, text=f"score: {self.score}", font=("verdana", 12))
         self.scoreLabel.pack()
@@ -33,14 +37,20 @@ class App:
 
     def start(self, event):
   
-        self.label.pack()
-        self.inp.pack()
-        self.next_color()
+        
+        if self.timer == 0:
+            print("game ended!")
+            self.update_highscore()
+            self.resetGame()
+            self.start(None)
+        else:
+            self.label.pack()
+            self.inp.pack()
+            self.next_color()
         
   
         if self.timer == 30:
             threading.Thread(target=self.countdown).start()
-            
             
 
     def next_color(self):
@@ -70,9 +80,26 @@ class App:
             self.timer -= 1
             self.timeLabel.config(text=f"Time left: {self.timer}")
             self.timeLabel.update()
-            self.timeLabel.after(1000, self.countdown)
-            
+            time.sleep(1)
+    
+    def resetGame(self):
+        self.timer = 30
+        self.score = 0
+        self.timeLabel.config(text=f"Time left: {self.timer}")
+        self.label.pack_forget()
+        self.inp.pack_forget()
+        self.timeLabel.update()
         
+        time.sleep(1)
+    
+    def update_highscore(self):
+        if self.score > self.highscore:
+            self.highscore = self.score
+            self.highscoreLabel.config(text=f"Highscore: {self.highscore}")
+            self.highscoreLabel.update()
+        else:
+            return
+           
     
 if __name__ == "__main__":
 

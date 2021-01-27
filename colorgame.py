@@ -35,14 +35,19 @@ class App:
 
         self.inp = tk.Entry(master)
 
+    def game_over(self):
+        return self.timer == 0
+
+
+    def end_game(self):
+        print("game ended!")
+        self.update_highscore()
+        self.resetGame()
+
+
     def start(self, event):
-  
-        
-        if self.timer == 0:
-            print("game ended!")
-            self.update_highscore()
-            self.resetGame()
-            self.start(None)
+        if self.game_over():
+            self.end_game()
         else:
             self.label.pack()
             self.inp.pack()
@@ -54,16 +59,13 @@ class App:
             
 
     def next_color(self):
-    
         user_input = self.inp.get()
         color = self.label.cget("fg")
         self.inp.focus()
 
         if user_input == "":
             print("Field cannot be empty!")
-        
         else:
-        
             print(f"User guess: {user_input}, color: {color}")
 
             if user_input == color:
@@ -72,15 +74,16 @@ class App:
                 self.scoreLabel.config(text=f"score: {self.score}")
 
             self.label.config(text=random.choice(self.colors), fg=random.choice(self.colors))
-
             self.inp.delete(0, 'end')
     
+
     def countdown(self):
         while self.timer > 0:
             self.timer -= 1
             self.timeLabel.config(text=f"Time left: {self.timer}")
             self.timeLabel.update()
             time.sleep(1)
+        self.end_game()
     
     def resetGame(self):
         self.timer = 30
@@ -89,6 +92,8 @@ class App:
         self.label.pack_forget()
         self.inp.pack_forget()
         self.timeLabel.update()
+        self.scoreLabel.config(text=f"score: {self.score}", font=("verdana", 12))
+        self.scoreLabel.update()
         
         time.sleep(1)
     
@@ -97,8 +102,6 @@ class App:
             self.highscore = self.score
             self.highscoreLabel.config(text=f"Highscore: {self.highscore}")
             self.highscoreLabel.update()
-        else:
-            return
            
     
 if __name__ == "__main__":

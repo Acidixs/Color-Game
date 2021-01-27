@@ -4,20 +4,21 @@ import time
 import threading
 
 class App:
-    def __init__(self, master, score=0, highscore=0, timer=30):
+    def __init__(self, master):
         self.master = master
         master.title = "color game"
         master.bind("<Return>", self.start)
         master.geometry("400x400")
-        self.score = score
-        self.highscore = highscore
-        self.timer = timer
+        self.score = 0
+        self.highscore = 0
+        self.timer = 30
         self.create_widgets(root)
+        self.set_darkmode()
         
     def create_widgets(self, master):
         self.colors = ["blue", "green", "yellow", "orange", "blue", "pink", "violet", "black", "white", "brown"]
 
-        self.highscoreLabel = tk.Label(master, text=f"Highscore :{self.highscore}", font=("verdana, 10"))
+        self.highscoreLabel = tk.Label(master, text=f"Highscore: {self.highscore}", font=("verdana, 10"))
         self.highscoreLabel.pack()
 
         self.scoreLabel = tk.Label(master, text=f"score: {self.score}", font=("verdana", 12))
@@ -26,14 +27,22 @@ class App:
         self.timeLabel = tk.Label(master, text=f"Time left: {self.timer}")
         self.timeLabel.pack()
 
-        self.intstructions = tk.Label(master, text="Press return to start!")
-        self.intstructions.config(fg="cyan", font=("verdana", 18))
+        self.intstructions = tk.Label(master, text="Press enter to start!")
+        self.intstructions.config(fg="green", font=("verdana", 18))
         self.intstructions.pack()
 
         self.label = tk.Label(master, text=random.choice(self.colors), fg=random.choice(self.colors),
                               font=("verdana", 14))
 
         self.inp = tk.Entry(master)
+
+    def set_darkmode(self):
+        self.master.config(bg="#212526")
+        self.highscoreLabel.config(bg="#212526", fg="white")
+        self.scoreLabel.config(bg="#212526", fg="white")
+        self.timeLabel.config(bg="#212526", fg="white")
+        self.intstructions.config(bg="#212526")
+        self.master.update()
 
     def game_over(self):
         return self.timer == 0
@@ -52,7 +61,6 @@ class App:
             self.label.pack()
             self.inp.pack()
             self.next_color()
-        
             self.intstructions.pack_forget()
   
         if self.timer == 30:
@@ -107,7 +115,6 @@ class App:
            
     
 if __name__ == "__main__":
-
     root = tk.Tk()
     app = App(root)
     root.mainloop()

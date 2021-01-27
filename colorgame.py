@@ -53,6 +53,7 @@ class App:
             self.inp.pack()
             self.next_color()
         
+            self.intstructions.pack_forget()
   
         if self.timer == 30:
             threading.Thread(target=self.countdown).start()
@@ -94,6 +95,7 @@ class App:
         self.timeLabel.update()
         self.scoreLabel.config(text=f"score: {self.score}", font=("verdana", 12))
         self.scoreLabel.update()
+        self.intstructions.pack()
         
         time.sleep(1)
     

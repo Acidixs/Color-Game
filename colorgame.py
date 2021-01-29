@@ -12,11 +12,17 @@ class App:
         self.score = 0
         self.highscore = 0
         self.timer = 30
+        self.sunIcon = tk.PhotoImage(file=r"img/sun.png").subsample(20, 20)
+        self.moonIcon = tk.PhotoImage(file=r"img/moon.png").subsample(20, 20)
         self.create_widgets(root)
         self.set_darkmode()
+
         
     def create_widgets(self, master):
         self.colors = ["blue", "green", "yellow", "orange", "blue", "pink", "violet", "black", "white", "brown"]
+
+        self.theme = tk.Button(master, text="light theme", image=self.sunIcon, command=self.set_lightmode, compound="left")
+        self.theme.pack(side="top", padx=10, pady=10)
 
         self.highscoreLabel = tk.Label(master, text=f"Highscore: {self.highscore}", font=("verdana, 10"))
         self.highscoreLabel.pack()
@@ -36,12 +42,25 @@ class App:
 
         self.inp = tk.Entry(master)
 
+
     def set_darkmode(self):
         self.master.config(bg="#212526")
         self.highscoreLabel.config(bg="#212526", fg="white")
         self.scoreLabel.config(bg="#212526", fg="white")
         self.timeLabel.config(bg="#212526", fg="white")
         self.intstructions.config(bg="#212526")
+        self.label.config(bg="#212526")
+        self.theme.config(text="light mode", image=self.sunIcon, command=self.set_lightmode)
+        self.master.update()
+
+    def set_lightmode(self):
+        self.master.config(bg="#f9f9f9")
+        self.highscoreLabel.config(bg="#f9f9f9", fg="black")
+        self.scoreLabel.config(bg="#f9f9f9", fg="black")
+        self.timeLabel.config(bg="#f9f9f9", fg="black")
+        self.intstructions.config(bg="#f9f9f9")
+        self.label.config(bg="#f9f9f9")
+        self.theme.config(text="dark mode", image=self.moonIcon, command=self.set_darkmode)
         self.master.update()
 
     def game_over(self):

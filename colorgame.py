@@ -24,13 +24,13 @@ class App:
         self.theme = tk.Button(master, text="light theme", image=self.sunIcon, command=self.set_lightmode, compound="left")
         self.theme.pack(side="top", padx=10, pady=10)
 
-        self.highscoreLabel = tk.Label(master, text=f"Highscore: {self.highscore}", font=("verdana, 10"))
+        self.highscoreLabel = tk.Label(master, text=f"Highscore: {self.highscore}", font=("verdana", 12))
         self.highscoreLabel.pack()
 
-        self.scoreLabel = tk.Label(master, text=f"score: {self.score}", font=("verdana", 12))
+        self.scoreLabel = tk.Label(master, text=f"Score: {self.score}", font=("verdana", 12))
         self.scoreLabel.pack()
         
-        self.timeLabel = tk.Label(master, text=f"Time left: {self.timer}")
+        self.timeLabel = tk.Label(master, text=f"Time left: {self.timer}", font=("verdana", 12))
         self.timeLabel.pack()
 
         self.intstructions = tk.Label(master, text="Press enter to start!")

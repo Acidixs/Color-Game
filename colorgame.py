@@ -2,6 +2,7 @@ import tkinter as tk
 import random
 import time
 import threading
+from datetime import datetime
 
 class App:
     def __init__(self, master):
@@ -63,12 +64,18 @@ class App:
         self.theme.config(text="dark mode", image=self.moonIcon, command=self.set_darkmode)
         self.master.update()
 
+    def save_score(self, score):
+        time = str((datetime.today().replace(microsecond=0)))
+        with open("scores.txt", "a+") as f:
+            f.write(f"{time} | Score: {score} \n")
+
     def game_over(self):
         return self.timer == 0
 
 
     def end_game(self):
         print("game ended!")
+        self.save_score(self.score)
         self.update_highscore()
         self.resetGame()
 

@@ -15,33 +15,74 @@ class App:
         self.timer = 30
         self.sunIcon = tk.PhotoImage(file=r"img/sun.png").subsample(20, 20)
         self.moonIcon = tk.PhotoImage(file=r"img/moon.png").subsample(20, 20)
+
+        self.mainframe = tk.Frame(root)
+        self.mainframe.pack()
+        self.secondframe = tk.Frame(root)
+
         self.create_widgets(root)
         self.set_darkmode()
 
-        
+
+    def enter_settings(self):
+        if self.mainframe.winfo_ismapped():
+            self.mainframe.pack_forget()
+            self.secondframe.pack()
+
+        else:
+            self.secondframe.pack_forget()
+            self.mainframe.pack()
+
+    # # settings frame
+    def set_timer(self):
+        time = int(self.timeEntry.get())
+        print(time)
+        self.timer = time
+        self.update_timer(time)
+        return time
+
+    def update_timer(self, time):
+        self.timeLabel.config(text=f"Time left: {time}")
+        self.timeLabel.update()
+
+
+
+
+
     def create_widgets(self, master):
         self.colors = ["blue", "green", "yellow", "orange", "blue", "pink", "violet", "black", "white", "brown"]
 
         self.theme = tk.Button(master, text="light theme", image=self.sunIcon, command=self.set_lightmode, compound="left")
-        self.theme.pack(side="top", padx=10, pady=10)
+        self.theme.pack(side="bottom", anchor="s", padx=5, pady=5)
 
-        self.highscoreLabel = tk.Label(master, text=f"Highscore: {self.highscore}", font=("verdana", 12))
+        self.highscoreLabel = tk.Label(self.mainframe, text=f"Highscore: {self.highscore}", font=("verdana", 12))
         self.highscoreLabel.pack()
 
-        self.scoreLabel = tk.Label(master, text=f"Score: {self.score}", font=("verdana", 12))
+        self.scoreLabel = tk.Label(self.mainframe, text=f"Score: {self.score}", font=("verdana", 12))
         self.scoreLabel.pack()
         
-        self.timeLabel = tk.Label(master, text=f"Time left: {self.timer}", font=("verdana", 12))
+        self.timeLabel = tk.Label(self.mainframe, text=f"Time left: {self.timer}", font=("verdana", 12))
         self.timeLabel.pack()
 
-        self.intstructions = tk.Label(master, text="Press enter to start!")
+        self.intstructions = tk.Label(self.mainframe, text="Press enter to start!")
         self.intstructions.config(fg="green", font=("verdana", 18))
         self.intstructions.pack()
 
-        self.label = tk.Label(master, text=random.choice(self.colors), fg=random.choice(self.colors),
+        self.label = tk.Label(self.mainframe, text=random.choice(self.colors), fg=random.choice(self.colors),
                               font=("verdana", 14))
 
-        self.inp = tk.Entry(master)
+        self.enterSettings = tk.Button(master, text="settings", command=self.enter_settings)
+        self.enterSettings.pack(side="bottom", anchor="s", padx=5, pady=5)
+
+        self.inp = tk.Entry(self.mainframe)
+
+
+        self.setTimeLabel = tk.Label(self.secondframe, text="enter the time") 
+        self.setTimeLabel.pack()
+        self.timeEntry = tk.Entry(self.secondframe)
+        self.timeEntry.pack()
+        self.saveBtn = tk.Button(self.secondframe, text="save", command=self.set_timer)
+        self.saveBtn.pack()
 
 
     def set_darkmode(self):
@@ -54,6 +95,11 @@ class App:
         self.theme.config(text="light mode", image=self.sunIcon, command=self.set_lightmode)
         self.master.update()
 
+        self.mainframe.config(bg="#212526")
+        self.secondframe.config(bg="#212526")
+        self.mainframe.update()
+        self.secondframe.update()
+
     def set_lightmode(self):
         self.master.config(bg="#f9f9f9")
         self.highscoreLabel.config(bg="#f9f9f9", fg="black")
@@ -63,6 +109,12 @@ class App:
         self.label.config(bg="#f9f9f9")
         self.theme.config(text="dark mode", image=self.moonIcon, command=self.set_darkmode)
         self.master.update()
+
+        self.mainframe.config(bg="#f9f9f9")
+        self.secondframe.config(bg="#f9f9f9")
+        self.mainframe.update()
+        self.secondframe.update()
+
 
     def save_score(self, score):
         time = str((datetime.today().replace(microsecond=0)))
@@ -89,8 +141,10 @@ class App:
             self.next_color()
             self.intstructions.pack_forget()
   
-        if self.timer == 30:
+        if self.timer == self.set_timer():
             threading.Thread(target=self.countdown).start()
+            self.timeEntry.delete(0, 'end')
+
             
 
     def next_color(self):
@@ -127,7 +181,7 @@ class App:
         self.label.pack_forget()
         self.inp.pack_forget()
         self.timeLabel.update()
-        self.scoreLabel.config(text=f"score: {self.score}", font=("verdana", 12))
+        self.scoreLabel.config(text=f"Score: {self.score}", font=("verdana", 12))
         self.scoreLabel.update()
         self.intstructions.pack()
         

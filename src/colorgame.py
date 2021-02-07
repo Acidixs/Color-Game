@@ -10,10 +10,12 @@ class Game:
         self.master = master
         master.title = "color game"
         master.bind("<Return>", self.start)
+        master.bind("<Escape>", self.resetGame)
         master.geometry("400x400")
         self.score = 0
         self.highscore = 0
         self.timer = self.get_timer()
+        self.timerRunning = False
         self.sunIcon = tk.PhotoImage(file=r"img/sun.png").subsample(20, 20)
         self.moonIcon = tk.PhotoImage(file=r"img/moon.png").subsample(20, 20)
         self.mainframe = tk.Frame(root)
@@ -23,7 +25,8 @@ class Game:
         self.set_darkmode()
 
 
-    def enter_settings(self):
+
+    def toggle_settings(self):
         if self.mainframe.winfo_ismapped():
             self.mainframe.pack_forget()
             self.secondframe.pack()
@@ -42,13 +45,13 @@ class Game:
             return data["timer"]
 
 
-    # # settings frame
     def set_timer(self):
         time = int(self.timeEntry.get())
         self.save_timer(time)
         self.update_timer()
 
     def update_timer(self):
+        self.timer = self.get_timer()
         self.timeLabel.config(text=f"Time left: {self.timer}")
         self.timeLabel.update()
 
@@ -75,11 +78,10 @@ class Game:
         self.label = tk.Label(self.mainframe, text=random.choice(self.colors), fg=random.choice(self.colors),
                               font=("verdana", 14))
 
-        self.enterSettings = tk.Button(master, text="settings", command=self.enter_settings)
-        self.enterSettings.pack(side="bottom", anchor="s", padx=5, pady=5)
+        self.toggleSettings = tk.Button(master, text="settings", command=self.toggle_settings)
+        self.toggleSettings.pack(side="bottom", anchor="s", padx=5, pady=5)
 
         self.inp = tk.Entry(self.mainframe)
-
 
         self.setTimeLabel = tk.Label(self.secondframe, text="enter the time") 
         self.setTimeLabel.pack()
@@ -87,6 +89,7 @@ class Game:
         self.timeEntry.pack()
         self.saveBtn = tk.Button(self.secondframe, text="save", command=self.set_timer)
         self.saveBtn.pack()
+
 
 
     def set_darkmode(self):
@@ -134,7 +137,7 @@ class Game:
         print("game ended!")
         self.save_score(self.score)
         self.update_highscore()
-        self.resetGame()
+        self.resetGame(event=True)
 
 
     def start(self, event):
@@ -145,9 +148,13 @@ class Game:
             self.inp.pack()
             self.next_color()
             self.intstructions.pack_forget()
-  
-        if self.timer == self.get_timer():
-            threading.Thread(target=self.countdown).start()
+
+            TimerLoop = TimerThread(self.countdown).create_thread()
+
+            if not self.timerRunning:
+                self.timerRunning = True
+                TimerLoop = TimerThread(self.countdown).create_thread()
+                TimerLoop.start()
             
 
     def next_color(self):
@@ -170,15 +177,21 @@ class Game:
     
 
     def countdown(self):
-        while self.timer > 0:
+        while self.timer > 0 and self.timerRunning == True:
             self.timer -= 1
             self.timeLabel.config(text=f"Time left: {self.timer}")
             self.timeLabel.update()
             time.sleep(1)
         self.end_game()
+        print("Thread stopped!")
+        return 
     
+    def stop_countdown(self):
+        self.timerRunning = False
 
-    def resetGame(self):
+
+    def resetGame(self, event):
+        self.stop_countdown()
         self.timer = self.get_timer()
         self.score = 0
         self.timeLabel.config(text=f"Time left: {self.timer}")
@@ -189,7 +202,7 @@ class Game:
         self.scoreLabel.update()
         self.intstructions.pack()
         time.sleep(1)
-    
+
     
     def update_highscore(self):
         if self.score > self.highscore:
@@ -197,7 +210,16 @@ class Game:
             self.highscoreLabel.config(text=f"Highscore: {self.highscore}")
             self.highscoreLabel.update()
            
-    
+
+class TimerThread(threading.Thread):
+    def __init__(self, function):
+        threading.Thread.__init__(self)
+        self.function = function
+
+    def create_thread(self):
+        return threading.Thread(target=self.function)
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     game = Game(root)

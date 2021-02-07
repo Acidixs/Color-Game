@@ -1,0 +1,4 @@
+.venv
+.vscode
+scratch.py
+scores.txt

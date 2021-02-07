@@ -13,7 +13,7 @@ class Game:
         master.bind("<Escape>", self.resetGame)
         master.geometry("400x400")
         self.score = 0
-        self.highscore = 0
+        self.highscore = self.get_highscore()
         self.timer = self.get_timer()
         self.timerRunning = False
         self.sunIcon = tk.PhotoImage(file=r"img/sun.png").subsample(20, 20)
@@ -209,6 +209,15 @@ class Game:
             self.highscore = self.score
             self.highscoreLabel.config(text=f"Highscore: {self.highscore}")
             self.highscoreLabel.update()
+
+            stats = {"highscore": self.highscore}
+            with open("stats.json", "w+") as f:
+                json.dump(stats, f, indent=4)
+
+    def get_highscore(self):
+        with open("stats.json", "r") as f:
+            stats = json.load(f)
+            return stats["highscore"]
            
 
 class TimerThread(threading.Thread):

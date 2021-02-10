@@ -82,13 +82,15 @@ class Game:
         self.toggleSettings.pack(side="bottom", anchor="s", padx=5, pady=5)
 
         self.inp = tk.Entry(self.mainframe)
-
-        self.setTimeLabel = tk.Label(self.secondframe, text="enter the time") 
+        self.settingsTitle = tk.Label(self.secondframe, text="Settings", font=("verdana", 12))
+        self.settingsTitle.pack(pady=5)
+        self.setTimeLabel = tk.Label(self.secondframe, text="Enter the time") 
         self.setTimeLabel.pack()
         self.timeEntry = tk.Entry(self.secondframe)
-        self.timeEntry.pack()
-        self.saveBtn = tk.Button(self.secondframe, text="save", command=self.set_timer)
-        self.saveBtn.pack()
+        self.timeEntry.pack(pady=5)
+        self.saveBtn = tk.Button(self.secondframe, text="Save", command=self.set_timer)
+        self.saveBtn.pack(pady=5)
+
 
 
 
@@ -100,6 +102,7 @@ class Game:
         self.intstructions.config(bg="#212526")
         self.label.config(bg="#212526")
         self.theme.config(text="light mode", image=self.sunIcon, command=self.set_lightmode)
+        self.settingsTitle.config(bg="#212526", fg="white")
         self.master.update()
 
         self.mainframe.config(bg="#212526")
@@ -115,6 +118,7 @@ class Game:
         self.intstructions.config(bg="#f9f9f9")
         self.label.config(bg="#f9f9f9")
         self.theme.config(text="dark mode", image=self.moonIcon, command=self.set_darkmode)
+        self.settingsTitle.config(bg="#f9f9f9", fg="black")
         self.master.update()
 
         self.mainframe.config(bg="#f9f9f9")

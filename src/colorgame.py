@@ -22,24 +22,24 @@ class Game:
         self.mainframe.pack()
         self.secondframe = tk.Frame(root)
 
-        self.redXIcon = tk.PhotoImage(file=r"img/red-x.png").subsample(10, 10)
+        self.redXIcon = tk.PhotoImage(file=r"img/red-x.png").subsample(12, 12)
         self.greenCheckMarkIcon = tk.PhotoImage(file=r"img/green-checkmark.png").subsample(10, 10)
-        self.canvas = tk.Canvas(master, bg="#212526", width=100, height=100, highlightthickness=0)
-        self.canvas.pack()
+        self.canvas = tk.Canvas(self.mainframe, bg="#212526", width=100, height=100, highlightthickness=0)
+        self.canvas.pack(side="bottom", pady=10)
 
 
         self.create_widgets(root)
         self.set_darkmode()
 
     def draw_x(self):
-        image = self.canvas.create_image(50, 50, anchor="center", image=self.redXIcon)
+        image = self.canvas.create_image(50, 50, anchor="s", image=self.redXIcon)
         self.canvas.itemconfigure(image, state="normal")
         time.sleep(0.5)
         self.canvas.itemconfigure(image, state="hidden")
         return 
 
     def draw_checkmark(self):
-        image = self.canvas.create_image(50, 50, anchor="center", image=self.greenCheckMarkIcon)
+        image = self.canvas.create_image(50, 50, anchor="s", image=self.greenCheckMarkIcon)
         self.canvas.itemconfigure(image, state="normal")
         time.sleep(0.5)
         self.canvas.itemconfigure(image, state="hidden")

@@ -21,8 +21,29 @@ class Game:
         self.mainframe = tk.Frame(root)
         self.mainframe.pack()
         self.secondframe = tk.Frame(root)
+
+        self.redXIcon = tk.PhotoImage(file=r"img/red-x.png").subsample(10, 10)
+        self.greenCheckMarkIcon = tk.PhotoImage(file=r"img/green-checkmark.png").subsample(10, 10)
+        self.canvas = tk.Canvas(master, bg="#212526", width=100, height=100, highlightthickness=0)
+        self.canvas.pack()
+
+
         self.create_widgets(root)
         self.set_darkmode()
+
+    def draw_x(self):
+        image = self.canvas.create_image(50, 50, anchor="center", image=self.redXIcon)
+        self.canvas.itemconfigure(image, state="normal")
+        time.sleep(0.5)
+        self.canvas.itemconfigure(image, state="hidden")
+        return 
+
+    def draw_checkmark(self):
+        image = self.canvas.create_image(50, 50, anchor="center", image=self.greenCheckMarkIcon)
+        self.canvas.itemconfigure(image, state="normal")
+        time.sleep(0.5)
+        self.canvas.itemconfigure(image, state="hidden")
+        return
 
 
 
@@ -103,6 +124,7 @@ class Game:
         self.label.config(bg="#212526")
         self.theme.config(text="light mode", image=self.sunIcon, command=self.set_lightmode)
         self.settingsTitle.config(bg="#212526", fg="white")
+        self.canvas.config(bg="#212526")
         self.master.update()
 
         self.mainframe.config(bg="#212526")
@@ -119,6 +141,7 @@ class Game:
         self.label.config(bg="#f9f9f9")
         self.theme.config(text="dark mode", image=self.moonIcon, command=self.set_darkmode)
         self.settingsTitle.config(bg="#f9f9f9", fg="black")
+        self.canvas.config(bg="#f9f9f9")
         self.master.update()
 
         self.mainframe.config(bg="#f9f9f9")
@@ -175,6 +198,13 @@ class Game:
                 print("correct!")
                 self.score += 1
                 self.scoreLabel.config(text=f"score: {self.score}")
+                show_checkmark = threading.Thread(target=self.draw_checkmark)
+                show_checkmark.start()
+
+            else:
+                print("wrong")
+                show_x = threading.Thread(target=self.draw_x)
+                show_x.start()
 
             self.label.config(text=random.choice(self.colors), fg=random.choice(self.colors))
             self.inp.delete(0, 'end')

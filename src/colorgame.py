@@ -176,38 +176,50 @@ class Game:
             self.next_color()
             self.intstructions.pack_forget()
 
-            TimerLoop = TimerThread(self.countdown).create_thread()
-
             if not self.timerRunning:
                 self.timerRunning = True
                 TimerLoop = TimerThread(self.countdown).create_thread()
                 TimerLoop.start()
             
+    def correct_answer(self, inp, color):
+        return inp == color
+
+    def update_score(self):
+        self.score += 1
+        self.scoreLabel.config(text=f"score: {self.score}")
+
+    def hasNumbers(self, inp):
+        return any(char.isdigit() for char in inp)
+
+    def invalid_input(self, inp):
+        if inp == "" or inp == None or self.hasNumbers(inp):
+            print("(!) Invalid input!")
+            return True
+        else:
+            return False
+
 
     def next_color(self):
         user_input = self.inp.get()
         color = self.label.cget("fg")
         self.inp.focus()
 
-        if user_input == "":
-            print("Field cannot be empty!")
+        print(user_input)
+
+        if self.invalid_input(user_input):
+            return
+
+        if self.correct_answer(user_input, color):
+            self.update_score()
+            show_checkmark = threading.Thread(target=self.draw_checkmark)
+            show_checkmark.start()
         else:
-            print(f"User guess: {user_input}, color: {color}")
+            show_x = threading.Thread(target=self.draw_x)
+            show_x.start()
 
-            if user_input == color:
-                print("correct!")
-                self.score += 1
-                self.scoreLabel.config(text=f"score: {self.score}")
-                show_checkmark = threading.Thread(target=self.draw_checkmark)
-                show_checkmark.start()
-
-            else:
-                print("wrong")
-                show_x = threading.Thread(target=self.draw_x)
-                show_x.start()
-
-            self.label.config(text=random.choice(self.colors), fg=random.choice(self.colors))
-            self.inp.delete(0, 'end')
+        # picks new color and resets input field
+        self.label.config(text=random.choice(self.colors), fg=random.choice(self.colors))
+        self.inp.delete(0, 'end')
     
 
     def countdown(self):

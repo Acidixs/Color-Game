@@ -26,6 +26,7 @@ class Database:
         # converts list of tuples to one list by using list comprehension
         l = [item for t in info for item in t]
         print("from db scores", l)
+        cursor.close()
         return l
 
     def get_round(self):
@@ -37,5 +38,6 @@ class Database:
         # converts list of tuples to one list by using list comprehension
         l = [item for t in info for item in t]
         print("from db rounds", l)
+        cursor.close()
         return l
 

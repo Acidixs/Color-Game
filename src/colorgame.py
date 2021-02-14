@@ -4,6 +4,8 @@ import time
 import threading
 from datetime import datetime
 import json
+from db import Database
+from graph import Graph
 
 class Game:
     def __init__(self, master):
@@ -26,6 +28,9 @@ class Game:
         self.greenCheckMarkIcon = tk.PhotoImage(file=r"img/green-checkmark.png").subsample(10, 10)
         self.canvas = tk.Canvas(self.mainframe, bg="#212526", width=100, height=100, highlightthickness=0)
         self.canvas.pack(side="bottom", pady=10)
+
+        self.graph = Graph()
+        self.db = Database()
 
 
         self.create_widgets(root)
@@ -112,7 +117,8 @@ class Game:
         self.saveBtn = tk.Button(self.secondframe, text="Save", command=self.set_timer)
         self.saveBtn.pack(pady=5)
 
-
+        self.graphButton = tk.Button(self.secondframe, text="Show graph", command=self.graph.draw_graph)
+        self.graphButton.pack(pady=5)
 
 
     def set_darkmode(self):
@@ -150,10 +156,13 @@ class Game:
         self.secondframe.update()
 
 
-    def save_score(self, score):
+    def save_score_local(self, score):
         time = str((datetime.today().replace(microsecond=0)))
         with open("scores.txt", "a+") as f:
             f.write(f"{time} | Score: {score} \n")
+
+    def save_score_db(self, score):
+        self.db.add_score(score)
 
 
     def game_over(self):
@@ -162,8 +171,12 @@ class Game:
 
     def end_game(self):
         print("game ended!")
-        self.save_score(self.score)
-        self.update_highscore()
+
+        if self.score != 0:
+            self.save_score_local(self.score)
+            self.save_score_db(self.score)
+            self.update_highscore()
+            print("penis")
         self.resetGame(event=True)
 
 
@@ -203,8 +216,6 @@ class Game:
         user_input = self.inp.get()
         color = self.label.cget("fg")
         self.inp.focus()
-
-        print(user_input)
 
         if self.invalid_input(user_input):
             return

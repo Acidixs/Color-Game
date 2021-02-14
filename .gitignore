@@ -2,3 +2,4 @@
 .vscode
 scratch.py
 scores.txt
+.env

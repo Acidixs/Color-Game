@@ -191,7 +191,10 @@ class Game:
 
             if not self.timerRunning:
                 self.timerRunning = True
-                TimerLoop = TimerThread(self.countdown).create_thread()
+                # TimerLoop = TimerThread(self.countdown).create_thread()
+                # TimerLoop.start()
+
+                TimerLoop = threading.Thread(target=self.countdown)
                 TimerLoop.start()
             
     def correct_answer(self, inp, color):

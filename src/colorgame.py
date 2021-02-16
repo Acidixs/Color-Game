@@ -191,9 +191,6 @@ class Game:
 
             if not self.timerRunning:
                 self.timerRunning = True
-                # TimerLoop = TimerThread(self.countdown).create_thread()
-                # TimerLoop.start()
-
                 TimerLoop = threading.Thread(target=self.countdown)
                 TimerLoop.start()
             
@@ -279,15 +276,6 @@ class Game:
             stats = json.load(f)
             return stats["highscore"]
            
-
-class TimerThread(threading.Thread):
-    def __init__(self, function):
-        threading.Thread.__init__(self)
-        self.function = function
-
-    def create_thread(self):
-        return threading.Thread(target=self.function)
-
 
 if __name__ == "__main__":
     root = tk.Tk()
